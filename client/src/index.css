@@ -1,0 +1,251 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    @apply bg-slate-950 text-slate-100 antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgb(30 58 138 / 0.35), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 0%, rgb(180 83 9 / 0.08), transparent);
+  }
+}
+
+@layer components {
+  .card-panel {
+    @apply rounded-xl border border-slate-700/80 bg-slate-800/40 shadow-lg shadow-black/25 backdrop-blur-sm;
+    @apply transition-[border-color,box-shadow] duration-200 ease-out;
+  }
+
+  @media (hover: hover) {
+    .card-panel:hover {
+      @apply border-slate-600/90 shadow-xl shadow-black/30;
+    }
+  }
+
+  .btn-primary {
+    @apply rounded-xl bg-blue-600 px-4 py-2.5 font-medium text-white shadow-md shadow-blue-900/30;
+    @apply transition-colors duration-150 hover:bg-blue-500 active:scale-[0.99];
+  }
+
+  .btn-secondary {
+    @apply rounded-xl bg-slate-700 px-4 py-2.5 font-medium text-slate-100 shadow-md shadow-black/20;
+    @apply transition-colors duration-150 hover:bg-slate-600 active:scale-[0.99];
+  }
+
+  .btn-success {
+    @apply rounded-xl bg-green-600 px-4 py-2.5 font-semibold text-white shadow-md shadow-green-900/30;
+    @apply transition-colors duration-150 hover:bg-green-500 active:scale-[0.99];
+  }
+
+  .btn-icon {
+    @apply inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl;
+    @apply text-slate-400 transition-colors hover:bg-slate-700/80 hover:text-white;
+  }
+
+  .page-title {
+    @apply text-xl font-semibold tracking-tight text-slate-100 sm:text-2xl;
+  }
+
+  .page-subtitle {
+    @apply mt-1 text-sm text-slate-500;
+  }
+
+  .empty-state {
+    @apply rounded-xl border border-dashed border-slate-700 bg-slate-800/30 px-4 py-8 text-center text-sm text-slate-500;
+  }
+
+  .table-scroll {
+    @apply -mx-1 overflow-x-auto px-1;
+  }
+
+  .seg-btn {
+    @apply flex-1 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors;
+    @apply min-h-[44px] sm:min-h-0 sm:py-1.5;
+  }
+
+  .seg-btn-active {
+    @apply bg-blue-600 text-white shadow-md shadow-blue-900/30;
+  }
+
+  .seg-btn-inactive {
+    @apply bg-slate-800 text-slate-300 hover:bg-slate-700;
+  }
+
+  .skeleton {
+    @apply animate-pulse bg-slate-700/50;
+  }
+
+  .price-hero {
+    @apply text-3xl font-bold tracking-tight text-green-400 sm:text-4xl;
+  }
+
+  .sheet-handle {
+    @apply mx-auto mb-1 mt-2 h-1 w-10 rounded-full bg-slate-600 sm:hidden;
+  }
+
+  .toast-item {
+    animation: toastIn 0.22s ease-out both;
+  }
+
+  .nav-mobile-active-dot {
+    @apply mt-0.5 h-1 w-1 rounded-full bg-current opacity-90;
+  }
+
+  .app-main {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  @media (min-width: 768px) {
+    .app-main {
+      padding-bottom: 1.5rem;
+    }
+  }
+
+  .app-bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  @media (max-width: 767px) {
+    .btn-primary,
+    .btn-secondary,
+    .btn-success {
+      @apply min-h-[44px];
+    }
+  }
+
+  /* Transición entre módulos: solo opacidad */
+  .route-view {
+    @apply min-h-[1px];
+    animation: routeFadeIn 0.2s ease-out both;
+  }
+
+  /* Consulta: sin fade al montar (evita flash con lista + input) */
+  .page-static {
+    @apply min-h-[1px];
+  }
+
+  .consulta-page {
+    contain: layout style;
+  }
+
+  .consulta-lista {
+    animation: consultaListIn 0.15s ease-out both;
+  }
+
+  .modal-backdrop {
+    animation: modalBackdropIn 0.2s ease-out both;
+  }
+
+  .modal-panel {
+    animation: modalPanelIn 0.22s ease-out both;
+  }
+}
+
+@keyframes routeFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes consultaListIn {
+  from {
+    opacity: 0.6;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalBackdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes modalPanelIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-view,
+  .consulta-lista {
+    animation: none;
+  }
+
+  .modal-backdrop,
+  .modal-panel,
+  .toast-item {
+    animation: none;
+  }
+}
+
+/* Evitar doble outline en campos con ring propio */
+input:focus:not(:focus-visible),
+select:focus:not(:focus-visible) {
+  outline: none;
+}
+
+input[type='date'],
+input[type='week'],
+input[type='month'],
+input[type='time'],
+input[type='datetime-local'] {
+  color-scheme: dark;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator,
+input[type='week']::-webkit-calendar-picker-indicator,
+input[type='month']::-webkit-calendar-picker-indicator,
+input[type='datetime-local']::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.8;
+  filter: brightness(0) invert(1);
+  padding: 0.2rem;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator:hover,
+input[type='week']::-webkit-calendar-picker-indicator:hover,
+input[type='month']::-webkit-calendar-picker-indicator:hover,
+input[type='datetime-local']::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+button:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.recharts-legend-item-text {
+  fill: #f8fafc !important;
+  color: #f8fafc !important;
+}

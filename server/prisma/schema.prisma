@@ -1,0 +1,147 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Marca {
+  id        Int        @id @default(autoincrement())
+  nombre    String     @unique
+  productos Producto[]
+}
+
+model Proveedor {
+  id        Int        @id @default(autoincrement())
+  nombre    String     @unique
+  productos Producto[]
+}
+
+model Producto {
+  id               Int                 @id @default(autoincrement())
+  codigoBarras     String?             @unique
+  nombre           String
+  precio           Decimal             @db.Decimal(10, 2)
+  stock            Int                 @default(0)
+  stockMinimo      Int                 @default(5)
+  fechaVencimiento DateTime?
+  activo           Boolean             @default(true)
+  marcaId          Int?
+  proveedorId      Int?
+  marca            Marca?              @relation(fields: [marcaId], references: [id])
+  proveedor        Proveedor?          @relation(fields: [proveedorId], references: [id])
+  historial        HistorialPrecio[]
+  detallesVenta    VentaDetalle[]
+  ingresos         IngresoMercaderia[]
+  updatedAt        DateTime            @updatedAt
+}
+
+model HistorialAumento {
+  id           Int      @id @default(autoincrement())
+  tipo         String
+  referenciaId Int
+  porcentaje   Decimal  @db.Decimal(5, 2)
+  fecha        DateTime @default(now())
+}
+
+model IngresoMercaderia {
+  id                Int       @id @default(autoincrement())
+  productoId        Int
+  cantidadIngresada Int
+  fechaVencimiento  DateTime?
+  fechaIngreso      DateTime  @default(now())
+  producto          Producto  @relation(fields: [productoId], references: [id])
+}
+
+model HistorialPrecio {
+  id          Int      @id @default(autoincrement())
+  productoId  Int
+  precioViejo Decimal  @db.Decimal(10, 2)
+  precioNuevo Decimal  @db.Decimal(10, 2)
+  fecha       DateTime @default(now())
+  producto    Producto @relation(fields: [productoId], references: [id])
+}
+
+model Cliente {
+  id           Int                @id @default(autoincrement())
+  nombre       String
+  telefono     String?
+  activo       Boolean            @default(true)
+  createdAt    DateTime           @default(now())
+  ventas       Venta[]
+  movimientos  CuentaMovimiento[]
+}
+
+model CuentaMovimiento {
+  id               Int      @id @default(autoincrement())
+  clienteId        Int?
+  clienteNombre    String?
+  tipo             String
+  monto            Decimal  @db.Decimal(10, 2)
+  ventaId          Int?     @unique
+  notas            String?
+  fecha            DateTime @default(now())
+  visibleEnCuentas Boolean  @default(true)
+  archivadoAt      DateTime?
+  cliente          Cliente? @relation(fields: [clienteId], references: [id])
+  venta            Venta?   @relation(fields: [ventaId], references: [id])
+}
+
+model Ciclo {
+  id              Int       @id @default(autoincrement())
+  fechaApertura   DateTime  @default(now())
+  fechaCierre     DateTime?
+  totalDia        Decimal?  @db.Decimal(10, 2)
+  cantidadTickets Int       @default(0)
+  estado          String    @default("abierto")
+  ventas          Venta[]
+}
+
+model Venta {
+  id            Int               @id @default(autoincrement())
+  total         Decimal           @db.Decimal(10, 2)
+  metodoPago    String            @default("Efectivo")
+  fecha         DateTime          @default(now())
+  clienteId     Int?
+  clienteNombre String?
+  cicloId       Int?
+  notas         String?
+  cliente       Cliente?          @relation(fields: [clienteId], references: [id])
+  ciclo         Ciclo?            @relation(fields: [cicloId], references: [id])
+  detalles      VentaDetalle[]
+  cuentaCargo   CuentaMovimiento?
+}
+
+model VentaDetalle {
+  id         Int      @id @default(autoincrement())
+  ventaId    Int
+  productoId Int
+  cantidad   Int
+  precioUnit Decimal  @db.Decimal(10, 2)
+  venta      Venta    @relation(fields: [ventaId], references: [id])
+  producto   Producto @relation(fields: [productoId], references: [id])
+}
+
+model SyncQueue {
+  id           Int      @id @default(autoincrement())
+  tabla        String
+  operacion    String
+  payload      Json
+  sincronizado Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
+
+model BackupRegistro {
+  id          Int       @id @default(autoincrement())
+  tipo        String
+  mesAnio     String
+  archivo     String?
+  checksum    String?
+  tamanoBytes Int?
+  createdAt   DateTime  @default(now())
+  eliminado   Boolean   @default(false)
+  eliminadoAt DateTime?
+  notas       String?
+}
