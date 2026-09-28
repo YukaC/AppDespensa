@@ -19,5 +19,9 @@
   },
   "devDependencies": {
     "prisma": "^6.3.0"
+  },
+  "overrides": {
+    "qs": "6.16.0",
+    "body-parser": "1.20.6"
   }
 }
