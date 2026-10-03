@@ -1,0 +1,35 @@
+name: Reference Architecture Check
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  reference-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run reference architecture checks
+        run: |
+          chmod +x .ra/checks/ra-checks
+          bash .ra/checks/ra-checks .
+
+      - name: Install dependencies
+        run: |
+          npm --prefix client ci && npm --prefix server ci
+
+      - name: Run project check
+        run: |
+          npm --prefix client run build && bash .ra/checks/ra-checks .
