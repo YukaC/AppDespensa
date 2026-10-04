@@ -14,6 +14,23 @@ export function checksumBuffer(buf) {
   return createHash('sha256').update(buf).digest('hex');
 }
 
+async function fetchAllClientes() {
+  const all = [];
+  let skip = 0;
+  const take = 500;
+  while (true) {
+    const page = await prisma.cliente.findMany({
+      take,
+      skip,
+      orderBy: { id: 'asc' },
+    });
+    all.push(...page);
+    if (page.length < take) break;
+    skip += take;
+  }
+  return all;
+}
+
 export async function generarSnapshot(anio, mes) {
   const { inicio, fin } = rangoMes(anio, mes);
   const mesKey = mesAnioKey(anio, mes);
@@ -29,7 +46,7 @@ export async function generarSnapshot(anio, mes) {
     prisma.cuentaMovimiento.findMany({
       where: { fecha: { gte: inicio, lte: fin } },
     }),
-    prisma.cliente.findMany(),
+    fetchAllClientes(),
   ]);
 
   return {
@@ -62,6 +79,7 @@ export async function crearBackupNube(anio, mes) {
   const token = process.env.CLOUD_BACKUP_TOKEN || process.env.CLOUD_SYNC_TOKEN;
   if (url) {
     await fetch(url, {
+      signal: AbortSignal.timeout(30000),
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
