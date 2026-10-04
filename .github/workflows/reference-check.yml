@@ -32,4 +32,4 @@ jobs:
 
       - name: Run project check
         run: |
-          npm --prefix client run build && bash .ra/checks/ra-checks .
+          node --test server/test-safety-behavior.js && npm --prefix client run build && bash .ra/checks/ra-checks .
