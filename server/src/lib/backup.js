@@ -29,7 +29,7 @@ export async function generarSnapshot(anio, mes) {
     prisma.cuentaMovimiento.findMany({
       where: { fecha: { gte: inicio, lte: fin } },
     }),
-    prisma.cliente.findMany(),
+    prisma.cliente.findMany({ take: 500 }),
   ]);
 
   return {
@@ -62,6 +62,7 @@ export async function crearBackupNube(anio, mes) {
   const token = process.env.CLOUD_BACKUP_TOKEN || process.env.CLOUD_SYNC_TOKEN;
   if (url) {
     await fetch(url, {
+      signal: AbortSignal.timeout(5000),
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

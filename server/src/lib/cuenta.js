@@ -10,7 +10,7 @@ export function normalizarNombre(nombre) {
 export async function findClientePorNombre(nombre, tx = prisma) {
   const n = normalizarNombre(nombre);
   if (!n) return null;
-  const clientes = await tx.cliente.findMany();
+  const clientes = await tx.cliente.findMany({ take: 500 });
   return clientes.find((c) => equalsSearch(c.nombre, n)) ?? null;
 }
 
