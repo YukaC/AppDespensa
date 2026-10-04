@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -28,8 +28,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm --prefix client ci && npm --prefix server ci
+          npm install
 
       - name: Run project check
         run: |
-          npm --prefix client run build && bash .ra/checks/ra-checks .
+          bash .ra/checks/ra-checks .
