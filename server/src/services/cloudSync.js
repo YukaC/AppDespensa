@@ -19,6 +19,7 @@ export async function runNightlySync() {
   }
 
   const response = await fetch(url, {
+    signal: AbortSignal.timeout(5000),
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
