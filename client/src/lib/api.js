@@ -1,6 +1,10 @@
 import { db } from './db';
 import { matchesSearch } from './search.js';
+import { createDemoApi } from './demo/index.js';
 
+// Kept inline (not imported) so Rollup can fold the flag and drop the demo
+// module from builds that do not set VITE_DEMO=1.
+const DEMO_MODE = import.meta.env.VITE_DEMO === '1';
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 export function isOnline() {
@@ -49,7 +53,7 @@ async function request(path, options = {}) {
   }
 }
 
-export const api = {
+const realApi = {
   health: () => request('/health'),
   verifyPin: (pin) =>
     request('/auth/pin', { method: 'POST', body: JSON.stringify({ pin }) }),
@@ -224,3 +228,7 @@ export const api = {
     },
   },
 };
+
+// The demo build (`VITE_DEMO=1`) answers every call from localStorage through
+// `demo/`. Without that flag this is the exact same object as before.
+export const api = DEMO_MODE ? createDemoApi() : realApi;

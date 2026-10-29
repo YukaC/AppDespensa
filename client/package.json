@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "npx vite",
     "build": "npx vite build",
+    "build:demo": "VITE_DEMO=1 vite build",
+    "test:demo": "node --test src/lib/demo/backend.test.js",
     "preview": "npx vite preview"
   },
   "dependencies": {
