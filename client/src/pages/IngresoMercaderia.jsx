@@ -3,11 +3,12 @@ import { BrowserMultiFormatReader } from '@zxing/browser';
 import { api } from '../lib/api';
 import { useBarcodeScanner } from '../hooks/useBarcodeScanner';
 import FloatingField from '../components/FloatingField';
+import { DEMO_MODE, DEMO_PIN } from '../lib/demo/config';
 export default function IngresoMercaderia() {
   const [pinOk, setPinOk] = useState(
     () => sessionStorage.getItem('ingreso_pin_ok') === '1'
   );
-  const [pin, setPin] = useState('');
+  const [pin, setPin] = useState(DEMO_MODE ? DEMO_PIN : '');
   const [pinError, setPinError] = useState('');
   const [producto, setProducto] = useState(null);
   const [cantidad, setCantidad] = useState('');

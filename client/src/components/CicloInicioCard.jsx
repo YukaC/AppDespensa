@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { api } from '../lib/api';
 import FloatingField from './FloatingField';
 import { toast } from '../lib/toast';
+import { DEMO_MODE, DEMO_PIN } from '../lib/demo/config';
 
 export default function CicloInicioCard({ onCicloAbierto }) {
-  const [pin, setPin] = useState('');
+  // Demo builds come with the PIN already typed: one less step for a visitor.
+  const [pin, setPin] = useState(DEMO_MODE ? DEMO_PIN : '');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -64,6 +66,11 @@ export default function CicloInicioCard({ onCicloAbierto }) {
             disabled={loading}
           />
           {error && <p className="text-sm text-red-400">{error}</p>}
+          {DEMO_MODE && (
+            <p className="text-xs text-slate-400">
+              Demo: PIN <b>{DEMO_PIN}</b> ya cargado — alcanza con iniciar el ciclo.
+            </p>
+          )}
           <button type="submit" disabled={loading} className="btn-success w-full">
             {loading ? 'Iniciando...' : 'Iniciar ciclo de facturación'}
           </button>

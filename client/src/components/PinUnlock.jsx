@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { api } from '../lib/api';
+import { DEMO_MODE, DEMO_PIN } from '../lib/demo/config';
 import Modal from './Modal';
 import FloatingField from './FloatingField';
 
 export default function PinUnlock({ onUnlock }) {
   const [open, setOpen] = useState(false);
-  const [pin, setPin] = useState('');
+  const [pin, setPin] = useState(DEMO_MODE ? DEMO_PIN : '');
   const [error, setError] = useState('');
 
   async function submit(e) {
@@ -47,6 +48,11 @@ export default function PinUnlock({ onUnlock }) {
             autoFocus
           />
           {error && <p className="text-sm text-red-400">{error}</p>}
+          {DEMO_MODE && (
+            <p className="text-xs text-slate-400">
+              Demo: PIN <b>{DEMO_PIN}</b> ya cargado — alcanza con confirmar.
+            </p>
+          )}
           <button
             type="submit"
             className="btn-primary w-full"
